@@ -1,9 +1,6 @@
 <template>
   <ul class="container-board">
     <List :title="'Tarefas'" />
-    <List :title="'Fazendo'" />
-    <List :title="'Pausado'" />
-    <List :title="'Concluído'" />
   </ul>
 </template>
 

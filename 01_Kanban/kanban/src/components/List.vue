@@ -6,7 +6,16 @@
         <IconPlus />
       </button>
     </header>
-    <Card />
+    <Card
+      :id="cards[0].id"
+      :title="cards[0].title"
+      :content="cards[0].content"
+    />
+    <Card
+      :id="cards[1].id"
+      :title="cards[1].title"
+      :content="cards[1].content"
+    />
   </li>
 </template>
 
@@ -20,6 +29,22 @@ export default {
     Card,
   },
   props: ["title"],
+  data() {
+    return {
+      cards: [
+        {
+          id: 1,
+          title: "Aprender NextJS",
+          content: "Estudar NextJS por 2 horas",
+        },
+        {
+          id: 2,
+          title: "Aprender Vue",
+          content: "Vue deve ser aprendido no curso da Coder",
+        },
+      ],
+    };
+  },
 };
 </script>
 
@@ -28,6 +53,7 @@ export default {
   padding: 0 15px;
   height: 100%;
   width: 100%;
+  max-width: 300px;
 }
 
 .container-list:not(:first-child) {
