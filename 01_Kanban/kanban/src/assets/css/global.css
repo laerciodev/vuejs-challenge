@@ -1,5 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap");
 
+html,
+body,
+#root {
+  height: 100%;
+}
+
 body {
   font-family: "Roboto", sans-serif;
   font-size: 14px;
@@ -10,4 +16,14 @@ body {
 
 ul {
   list-style: none;
+  margin-top: 30px;
+}
+
+.btn {
+  cursor: pointer;
+  height: 42px;
+  width: 42px;
+  border-radius: 50%;
+  background-color: #3b5bfd;
+  border: 0;
 }
