@@ -1,7 +1,6 @@
 <template>
   <div
     draggable="true"
-    :class="{ grabbing: isGrabbing }"
     @dragover.prevent
     @dragstart="dragStart($event, id)"
     @dragend="dragEnd"
@@ -10,33 +9,39 @@
   >
     <header class="header-card">
       <label class="label"></label>
-      <h3>{{ title }}</h3>
+      <h3>id: {{ id }}</h3>
+      <button class="btn delete" @click="remove(id)">
+        <IconDelete />
+      </button>
     </header>
     <p class="content">{{ content }}</p>
   </div>
 </template>
 
 <script>
+import { mapMutations } from "vuex";
+import IconDelete from "./IconDelete";
+
 export default {
-  props: ["id", "title", "content"],
-  data() {
-    return {
-      isGrabbing: false,
-    };
+  components: {
+    IconDelete,
   },
+  props: ["id", "title", "content"],
   methods: {
+    ...mapMutations(["removeCard"]),
     dragStart(event, id) {
-      this.isGrabbing = true;
       event.dataTransfer.setData("itemId", id);
     },
 
-    dragEnd() {
-      this.isGrabbing = false;
-    },
+    dragEnd() {},
 
     onDrop(event) {
       console.log(this.isGrabbing);
       console.log(event.dataTransfer.getData("itemId"));
+    },
+
+    remove(id) {
+      this.removeCard(id);
     },
   },
 };
@@ -46,6 +51,7 @@ export default {
 .header-card {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 10px;
   background: rgba(230, 236, 245, 0.4);
   position: absolute;
@@ -91,5 +97,10 @@ export default {
 .grabbing .header-card,
 .grabbing .content {
   opacity: 0;
+}
+
+.btn.delete {
+  background-color: transparent;
+  width: 30px;
 }
 </style>
