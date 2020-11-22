@@ -11,7 +11,7 @@
       <label class="label"></label>
       <h3>id: {{ id }}</h3>
       <button class="btn delete" @click="remove(id)">
-        <IconDelete />
+        <IconDelete title="remover card" />
       </button>
     </header>
     <p class="content">{{ content }}</p>
