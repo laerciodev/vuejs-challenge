@@ -10,7 +10,7 @@
     <header class="header-card">
       <label class="label"></label>
       <h3>id: {{ id }}</h3>
-      <button class="btn delete" @click="remove(id)">
+      <button class="btn delete" @click="remove">
         <IconDelete title="remover card" />
       </button>
     </header>
@@ -26,7 +26,7 @@ export default {
   components: {
     IconDelete,
   },
-  props: ["id", "title", "content"],
+  props: ["id", "title", "content", "indexColumn"],
   methods: {
     ...mapMutations(["removeCard"]),
     dragStart(event, id) {
@@ -40,9 +40,9 @@ export default {
       console.log(event.dataTransfer.getData("itemId"));
     },
 
-    remove(id) {
-      this.removeCard(id);
-    },
+    remove() {
+      this.removeCard({ id: this.id, indexColumn: this.indexColumn })
+    }
   },
 };
 </script>

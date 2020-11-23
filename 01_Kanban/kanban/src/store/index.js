@@ -5,28 +5,38 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    cards: [],
+    columns: [],
   },
   getters: {
-    cards: (state) => state.cards,
+    columns: state => state.columns,
   },
   mutations: {
+    addColumn(state) {
+      state.columns.push([]);
+    },
+    removeLastColumn(state) {
+      state.columns.pop();
+    },
+    removeColumn(state, index) {
+      state.columns.splice(index, 1)
+    },
     addCard(state, payload) {
-      state.cards.push(payload);
+      const { indexColumn } = payload;
+      state.columns[indexColumn].push(payload)
     },
-    removeCard(state, payload) {
-      const index = state.cards.findIndex((card) => card.id === payload);
-      state.cards.splice(index, 1);
+    removeCard(state, { indexColumn, id }) {
+      const index = state.columns[indexColumn].findIndex(card => card.id === id);
+      state.columns[indexColumn].splice(index, 1);
     },
-    sortBy(state, type) {
+    sortBy(state, { type, indexColumn }) {
       if (type === "asc") {
-        state.cards = state.cards.sort((a, b) =>
+        state.columns[indexColumn] = state.columns[indexColumn].sort((a, b) =>
           a.id < b.id ? -1 : a.id > b.id ? 1 : 0
         );
       }
 
       if (type === "desc") {
-        state.cards = state.cards.sort((a, b) =>
+        state.columns[indexColumn] = state.columns[indexColumn].sort((a, b) =>
           a.id > b.id ? -1 : a.id > b.id ? 1 : 0
         );
       }

@@ -1,23 +1,23 @@
 <template>
   <li class="container-list">
     <div class="container-border">
-      <button class="btn remove-column">
+      <button @click="removeColumn(indexColumn)" class="btn remove-column">
         <IconChess />
       </button>
       <header class="header-list">
         <button @click="createCard" class="btn" type="button">
           <IconPlus />
         </button>
-        <button class="btn" @click="sortBy('asc')">
+        <button class="btn" @click="sortBy({ type: 'asc', indexColumn })">
           <IconSortAsc />
         </button>
-        <button class="btn" @click="sortBy('desc')">
+        <button class="btn" @click="sortBy({ type: 'desc', indexColumn })">
           <IconSortDesc />
         </button>
       </header>
-      <ul v-if="cards.length > 0" class="container-cards">
-        <li v-for="card in cards" :key="card.id">
-          <Card :id="card.id" :title="card.title" :content="card.content" />
+      <ul v-if="columns[indexColumn].length > 0" class="container-cards">
+        <li v-for="card in columns[indexColumn]" :key="card.id">
+          <Card :id="card.id" :title="card.title" :content="card.content" :indexColumn="indexColumn" />
         </li>
       </ul>
       <div v-else>Adicione um card.</div>
@@ -41,23 +41,23 @@ export default {
     IconSortDesc,
     Card,
   },
-  props: ["title"],
+  props: ["index", "indexColumn"],
   data() {
     return {
-      cards: this.$store.getters.cards,
+      columns: this.$store.getters.columns,
     };
   },
   methods: {
-    ...mapMutations(["addCard", "sortBy"]),
+    ...mapMutations(["addCard", "sortBy", "removeColumn"]),
     createCard() {
       const cardId = this.generateId();
       this.addCard({
         id: cardId,
+        indexColumn: this.indexColumn,
         title: "Digite uma tarefa",
         content: "Descrição da tarefa",
       });
     },
-
     generateId() {
       let id = "";
       const possible = "1234567890";
