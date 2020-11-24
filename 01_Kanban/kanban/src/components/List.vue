@@ -1,6 +1,11 @@
 <template>
   <li class="container-list">
-    <div class="container-border">
+    <div
+      draggable="true"
+      @dragover.prevent
+      @dragstart="dragStart($event, indexColumn)"
+      @dragend="dragEnd"
+      @drop="onDrop($event, indexColumn)" class="container-border">
       <button @click="removeColumn(indexColumn)" class="btn remove-column">
         <IconChess />
       </button>
@@ -15,8 +20,8 @@
           <IconSortDesc />
         </button>
       </header>
-      <ul v-if="columns[indexColumn].length > 0" class="container-cards">
-        <li v-for="card in columns[indexColumn]" :key="card.id">
+      <ul v-if="cards.length > 0" class="container-cards">
+        <li v-for="card in cards" :key="card.id">
           <Card
             :id="card.id"
             :title="card.title"
@@ -37,6 +42,7 @@ import IconSortAsc from "./IconSortAsc.vue";
 import IconSortDesc from "./IconSortDesc.vue";
 import IconPlus from "./IconPlus.vue";
 import IconChess from "./IconChess.vue";
+import generateId from "@/helpers/generate_id";
 
 export default {
   components: {
@@ -46,33 +52,39 @@ export default {
     IconSortDesc,
     Card
   },
-  props: ["index", "indexColumn"],
-  data() {
-    return {
-      columns: this.$store.getters.columns
-    };
+  props: ["cards", "id"],
+  computed: {
+    indexColumn() {
+      return this.$store.getters.columns.findIndex(({ id }) => id === this.id);
+    },
   },
   methods: {
-    ...mapMutations(["addCard", "sortBy", "removeColumn"]),
+    ...mapMutations(["addCard", "sortBy", "removeColumn", "reorderColumns"]),
     createCard() {
-      const cardId = this.generateId();
       this.addCard({
-        id: cardId,
+        id: generateId(),
         indexColumn: this.indexColumn,
-        indexCard: this.columns[this.indexColumn].length,
         title: "Digite uma tarefa",
         content: "Descrição da tarefa"
       });
     },
-    generateId() {
-      let id = "";
-      const possible = "1234567890";
 
-      for (let i = 0; i < 12; i++)
-        id += possible.charAt(Math.floor(Math.random() * possible.length));
+    dragStart(event, indexColumn) {
+      event.dataTransfer.setData("indexColumn", indexColumn);
+    },
 
-      return id;
-    }
+    dragEnd() {},
+
+    onDrop(event, indexColumn) {
+      const newIndex = indexColumn;
+      const oldIndex = event.dataTransfer.getData("indexColumn");
+      this.reorderColumns({
+        indexColumn: this.indexColumn,
+        oldIndex,
+        newIndex
+      });
+      event.dataTransfer.clearData();
+    },
   }
 };
 </script>

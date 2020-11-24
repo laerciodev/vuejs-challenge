@@ -4,11 +4,12 @@
     <button v-show="columns.length >= 4" @click="removeLastColumn">
       remove last column
     </button>
-    <ul v-if="columns.length > 0" class="container-board">
+    <ul class="container-board">
       <List
-        v-for="(item, index) in columns"
-        :indexColumn="index"
-        :key="index"
+        v-for="column in columns"
+        :key="column.id"
+        :cards="column.cards"
+        :id="column.id"
       />
     </ul>
   </fragment>
@@ -18,6 +19,7 @@
 import { mapMutations } from "vuex";
 import { Fragment } from "vue-fragment";
 import List from "./List.vue";
+
 export default {
   components: {
     List,
@@ -30,15 +32,22 @@ export default {
   },
   methods: {
     ...mapMutations(["addColumn", "removeLastColumn"]),
-    generateId() {
-      let id = "";
-      const possible = "1234567890";
+    dragStart(event, indexCard) {
+      event.dataTransfer.setData("cardId", indexCard);
+    },
 
-      for (let i = 0; i < 12; i++)
-        id += possible.charAt(Math.floor(Math.random() * possible.length));
+    dragEnd() {},
 
-      return id;
-    }
+    onDrop(event, indexCard) {
+      const newIndex = indexCard;
+      const oldIndex = event.dataTransfer.getData("cardId");
+      this.reorderCards({
+        indexColumn: this.indexColumn,
+        oldIndex,
+        newIndex
+      });
+      event.dataTransfer.clearData();
+    },
   }
 };
 </script>

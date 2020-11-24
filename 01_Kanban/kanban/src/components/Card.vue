@@ -29,10 +29,10 @@ export default {
   props: ["id", "title", "content", "indexColumn"],
   computed: {
     indexCard() {
-      return this.$store.getters.columns[0].findIndex(
+      return this.$store.getters.columns[this.indexColumn].cards.findIndex(
         ({ id }) => id === this.id
       );
-    }
+    },
   },
   methods: {
     ...mapMutations(["removeCard", "reorderCards"]),
@@ -46,6 +46,7 @@ export default {
       const newIndex = indexCard;
       const oldIndex = event.dataTransfer.getData("cardId");
       this.reorderCards({
+        indexColumn: this.indexColumn,
         oldIndex,
         newIndex
       });
