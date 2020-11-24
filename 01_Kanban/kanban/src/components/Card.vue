@@ -1,7 +1,6 @@
 <template>
   <div
     :class="{ 'empty-card': content === null, 'card-over': isGrabbing }"
-    ref="card"
     draggable="true"
     @dragover.prevent
     @dragstart="dragStart($event, indexCard)"
@@ -17,7 +16,7 @@
         <IconDelete title="remover card" />
       </button>
     </header>
-    <p v-if="content !== null" class="content">{{ content }}</p>
+    <input type="text" @blur="save" v-model.lazy="descTask" v-if="content !== null" class="content" />
     <p v-else>Adicione ou arraste um card.</p>
   </div>
 </template>
@@ -40,11 +39,16 @@ export default {
   },
   data() {
     return {
-      isGrabbing: false
+      isGrabbing: false,
+      descTask: this.content
     };
   },
   methods: {
-    ...mapMutations(["removeCard", "reorderCards"]),
+    ...mapMutations(["removeCard", "reorderCards", "saveTask"]),
+    save() {
+      this.saveTask({ indexColumn: this.indexColumn, indexCard: this.indexCard, descTask: this.descTask });
+    },
+
     dragStart(event, indexCard) {
       event.dataTransfer.effectAllowed = "move";
       const cardsInfo = JSON.stringify({
@@ -116,6 +120,7 @@ export default {
   font-weight: 500;
   line-height: 20px;
   margin-top: 40px;
+  border: 0;
 }
 
 .label {

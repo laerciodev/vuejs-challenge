@@ -39,6 +39,10 @@ export default new Vuex.Store({
       state.columns[indexColumn].cards.splice(index, 1);
     },
 
+    saveTask(state, { indexColumn, indexCard, descTask }) {
+      state.columns[indexColumn].cards[indexCard].content = descTask; 
+    },
+
     sortBy(state, { type, indexColumn }) {
       if (type === "asc") {
         state.columns[indexColumn].cards = state.columns[
