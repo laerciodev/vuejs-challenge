@@ -1,33 +1,43 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import moveInArray from "@/helpers/array.js";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    columns: [],
+    columns: []
   },
+
   getters: {
-    columns: state => state.columns,
+    columns: state => state.columns
   },
+
   mutations: {
     addColumn(state) {
       state.columns.push([]);
     },
+
     removeLastColumn(state) {
       state.columns.pop();
     },
+
     removeColumn(state, index) {
-      state.columns.splice(index, 1)
+      state.columns.splice(index, 1);
     },
+
     addCard(state, payload) {
       const { indexColumn } = payload;
-      state.columns[indexColumn].push(payload)
+      state.columns[indexColumn].push(payload);
     },
+
     removeCard(state, { indexColumn, id }) {
-      const index = state.columns[indexColumn].findIndex(card => card.id === id);
+      const index = state.columns[indexColumn].findIndex(
+        card => card.id === id
+      );
       state.columns[indexColumn].splice(index, 1);
     },
+
     sortBy(state, { type, indexColumn }) {
       if (type === "asc") {
         state.columns[indexColumn] = state.columns[indexColumn].sort((a, b) =>
@@ -41,7 +51,14 @@ export default new Vuex.Store({
         );
       }
     },
+
+    reorderCards(state, payload) {
+      let { oldIndex } = payload;
+      oldIndex = parseInt(oldIndex, 10);
+
+      moveInArray(state.columns[0], oldIndex, payload.newIndex);
+    }
   },
   actions: {},
-  modules: {},
+  modules: {}
 });

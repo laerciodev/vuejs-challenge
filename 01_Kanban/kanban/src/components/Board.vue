@@ -1,9 +1,15 @@
 <template>
   <fragment>
     <button v-show="columns.length < 4" @click="addColumn">add column</button>
-    <button v-show="columns.length >= 4" @click="removeLastColumn">remove last column</button>
+    <button v-show="columns.length >= 4" @click="removeLastColumn">
+      remove last column
+    </button>
     <ul v-if="columns.length > 0" class="container-board">
-      <List v-for="(item, index) in columns" :indexColumn="index" :key="index" />
+      <List
+        v-for="(item, index) in columns"
+        :indexColumn="index"
+        :key="index"
+      />
     </ul>
   </fragment>
 </template>
@@ -15,12 +21,12 @@ import List from "./List.vue";
 export default {
   components: {
     List,
-    Fragment,
+    Fragment
   },
   data() {
     return {
-      columns: this.$store.getters.columns,
-    }
+      columns: this.$store.getters.columns
+    };
   },
   methods: {
     ...mapMutations(["addColumn", "removeLastColumn"]),
@@ -32,9 +38,9 @@ export default {
         id += possible.charAt(Math.floor(Math.random() * possible.length));
 
       return id;
-    },
+    }
   }
-}
+};
 </script>
 
 <style>

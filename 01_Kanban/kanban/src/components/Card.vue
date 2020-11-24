@@ -2,9 +2,9 @@
   <div
     draggable="true"
     @dragover.prevent
-    @dragstart="dragStart($event, id)"
+    @dragstart="dragStart($event, indexCard)"
     @dragend="dragEnd"
-    @drop="onDrop($event)"
+    @drop="onDrop($event, indexCard)"
     class="container-card"
   >
     <header class="header-card">
@@ -24,26 +24,41 @@ import IconDelete from "./IconDelete";
 
 export default {
   components: {
-    IconDelete,
+    IconDelete
   },
   props: ["id", "title", "content", "indexColumn"],
+  computed: {
+    indexCard() {
+      return this.$store.getters.columns[0].findIndex(
+        ({ id }) => id === this.id
+      );
+    }
+  },
   methods: {
-    ...mapMutations(["removeCard"]),
-    dragStart(event, id) {
-      event.dataTransfer.setData("itemId", id);
+    ...mapMutations(["removeCard", "reorderCards"]),
+    dragStart(event, indexCard) {
+      event.dataTransfer.setData("cardId", indexCard);
     },
 
     dragEnd() {},
 
-    onDrop(event) {
-      console.log(this.isGrabbing);
-      console.log(event.dataTransfer.getData("itemId"));
+    onDrop(event, indexCard) {
+      const newIndex = indexCard;
+      const oldIndex = event.dataTransfer.getData("cardId");
+      this.reorderCards({
+        oldIndex,
+        newIndex
+      });
+      event.dataTransfer.clearData();
     },
 
     remove() {
-      this.removeCard({ id: this.id, indexColumn: this.indexColumn })
+      this.removeCard({
+        id: this.id,
+        indexColumn: this.indexColumn
+      });
     }
-  },
+  }
 };
 </script>
 

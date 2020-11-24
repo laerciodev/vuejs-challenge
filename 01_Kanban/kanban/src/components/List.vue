@@ -17,7 +17,12 @@
       </header>
       <ul v-if="columns[indexColumn].length > 0" class="container-cards">
         <li v-for="card in columns[indexColumn]" :key="card.id">
-          <Card :id="card.id" :title="card.title" :content="card.content" :indexColumn="indexColumn" />
+          <Card
+            :id="card.id"
+            :title="card.title"
+            :content="card.content"
+            :indexColumn="indexColumn"
+          />
         </li>
       </ul>
       <div v-else>Adicione um card.</div>
@@ -39,12 +44,12 @@ export default {
     IconChess,
     IconSortAsc,
     IconSortDesc,
-    Card,
+    Card
   },
   props: ["index", "indexColumn"],
   data() {
     return {
-      columns: this.$store.getters.columns,
+      columns: this.$store.getters.columns
     };
   },
   methods: {
@@ -54,8 +59,9 @@ export default {
       this.addCard({
         id: cardId,
         indexColumn: this.indexColumn,
+        indexCard: this.columns[this.indexColumn].length,
         title: "Digite uma tarefa",
-        content: "Descrição da tarefa",
+        content: "Descrição da tarefa"
       });
     },
     generateId() {
@@ -66,8 +72,8 @@ export default {
         id += possible.charAt(Math.floor(Math.random() * possible.length));
 
       return id;
-    },
-  },
+    }
+  }
 };
 </script>
 
