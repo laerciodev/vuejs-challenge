@@ -9,6 +9,9 @@ yarn install
 ```
 yarn serve
 ```
+### Screenshot
+![alt screenshot](https://github.com/laerciodev/vuejs-challenge/blob/master/01_Kanban/kanban/Screenshot%20from%202020-11-24%2012-11-58.png)
+
 
 ### Compiles and minifies for production
 ```
