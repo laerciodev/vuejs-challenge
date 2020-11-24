@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import moveInArray from "@/helpers/array";
-import generateId from '@/helpers/generate_id';
+import { moveInsideArray, moveBetweenArray } from "@/helpers/array";
+import generateId from "@/helpers/generate_id";
 
 Vue.use(Vuex);
 
@@ -41,31 +41,44 @@ export default new Vuex.Store({
 
     sortBy(state, { type, indexColumn }) {
       if (type === "asc") {
-        state.columns[indexColumn].cards = state.columns[indexColumn].cards.sort((a, b) =>
-          a.id < b.id ? -1 : a.id > b.id ? 1 : 0
-        );
+        state.columns[indexColumn].cards = state.columns[
+          indexColumn
+        ].cards.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
       }
 
       if (type === "desc") {
-        state.columns[indexColumn].cards = state.columns[indexColumn].cards.sort((a, b) =>
-          a.id > b.id ? -1 : a.id > b.id ? 1 : 0
-        );
+        state.columns[indexColumn].cards = state.columns[
+          indexColumn
+        ].cards.sort((a, b) => (a.id > b.id ? -1 : a.id > b.id ? 1 : 0));
       }
     },
 
     reorderCards(state, payload) {
       let { oldIndex } = payload;
-      const { newIndex, indexColumn } = payload;
+      const { newIndex, oldIndexColumn, newIndexColumn } = payload;
       oldIndex = parseInt(oldIndex, 10);
 
-      moveInArray(state.columns[indexColumn].cards, oldIndex, newIndex);
+      if (oldIndexColumn === newIndexColumn) {
+        moveInsideArray(
+          state.columns[oldIndexColumn].cards,
+          oldIndex,
+          newIndex
+        );
+      } else {
+        moveBetweenArray(
+          state.columns[oldIndexColumn].cards,
+          state.columns[newIndexColumn].cards,
+          oldIndex,
+          newIndex
+        );
+      }
     },
 
     reorderColumns(state, payload) {
       let { oldIndex } = payload;
       const { newIndex } = payload;
       oldIndex = parseInt(oldIndex, 10);
-      moveInArray(state.columns, oldIndex, newIndex);
+      moveInsideArray(state.columns, oldIndex, newIndex);
     }
   },
   actions: {},

@@ -1,20 +1,24 @@
 <template>
   <div
+    :class="{ 'empty-card': content === null, 'card-over': isGrabbing }"
+    ref="card"
     draggable="true"
     @dragover.prevent
     @dragstart="dragStart($event, indexCard)"
-    @dragend="dragEnd"
+    @dragover="dragOver"
+    @dragleave="dragLeave"
     @drop="onDrop($event, indexCard)"
     class="container-card"
   >
-    <header class="header-card">
+    <header v-show="content !== null" class="header-card">
       <label class="label"></label>
       <h3>id: {{ id }}</h3>
       <button class="btn delete" @click="remove">
         <IconDelete title="remover card" />
       </button>
     </header>
-    <p class="content">{{ content }}</p>
+    <p v-if="content !== null" class="content">{{ content }}</p>
+    <p v-else>Adicione ou arraste um card.</p>
   </div>
 </template>
 
@@ -32,21 +36,42 @@ export default {
       return this.$store.getters.columns[this.indexColumn].cards.findIndex(
         ({ id }) => id === this.id
       );
-    },
+    }
+  },
+  data() {
+    return {
+      isGrabbing: false
+    };
   },
   methods: {
     ...mapMutations(["removeCard", "reorderCards"]),
     dragStart(event, indexCard) {
-      event.dataTransfer.setData("cardId", indexCard);
+      event.dataTransfer.effectAllowed = "move";
+      const cardsInfo = JSON.stringify({
+        indexCard,
+        indexColumn: this.indexColumn
+      });
+      event.dataTransfer.setData("cardsInfo", cardsInfo);
     },
 
-    dragEnd() {},
+    dragOver() {
+      this.isGrabbing = true;
+    },
+
+    dragLeave() {
+      this.isGrabbing = false;
+    },
 
     onDrop(event, indexCard) {
+      event.stopPropagation();
+      this.isGrabbing = false;
       const newIndex = indexCard;
-      const oldIndex = event.dataTransfer.getData("cardId");
+      const { indexCard: oldIndex, indexColumn: oldIndexColumn } = JSON.parse(
+        event.dataTransfer.getData("cardsInfo")
+      );
       this.reorderCards({
-        indexColumn: this.indexColumn,
+        oldIndexColumn,
+        newIndexColumn: this.indexColumn,
         oldIndex,
         newIndex
       });
@@ -104,7 +129,7 @@ export default {
 .grabbing {
   border: 2px dashed rgba(0, 0, 0, 0.2);
   border-radius: 0;
-  background: transparent;
+  /* background: transparent; */
   box-shadow: none;
   cursor: grabbing;
   height: 90px;
@@ -118,5 +143,17 @@ export default {
 .btn.delete {
   background-color: transparent;
   width: 30px;
+}
+
+.empty-card {
+  border: 1px dashed gray;
+  background: none;
+  height: 50px;
+  text-align: center;
+  line-height: 50px;
+}
+
+.card-over {
+  border: 2px dashed gray;
 }
 </style>

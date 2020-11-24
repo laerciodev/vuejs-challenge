@@ -1,8 +1,8 @@
 <template>
   <fragment>
-    <button v-show="columns.length < 4" @click="addColumn">add column</button>
-    <button v-show="columns.length >= 4" @click="removeLastColumn">
-      remove last column
+    <button class="btn add-column" v-show="columns.length < 4" @click="addColumn">adicionar coluna</button>
+    <button class="btn remove-last-column" v-show="columns.length >= 4" @click="removeLastColumn">
+      remover coluna
     </button>
     <ul class="container-board">
       <List
@@ -47,7 +47,7 @@ export default {
         newIndex
       });
       event.dataTransfer.clearData();
-    },
+    }
   }
 };
 </script>
@@ -57,5 +57,14 @@ export default {
   display: flex;
   padding: 30px 0;
   height: calc(100% - 80px);
+}
+
+.btn.add-column,
+.btn.remove-last-column {
+  margin: 20px;
+  border-radius: 20px;
+  color: #fff;
+  text-transform: uppercase;
+  width: 200px;
 }
 </style>

@@ -5,7 +5,9 @@
       @dragover.prevent
       @dragstart="dragStart($event, indexColumn)"
       @dragend="dragEnd"
-      @drop="onDrop($event, indexColumn)" class="container-border">
+      @drop="onDrop($event, indexColumn)"
+      class="container-border"
+    >
       <button @click="removeColumn(indexColumn)" class="btn remove-column">
         <IconChess />
       </button>
@@ -30,7 +32,14 @@
           />
         </li>
       </ul>
-      <div v-else>Adicione um card.</div>
+      <li v-else>
+        <Card
+          :id="null"
+          :title="null"
+          :content="null"
+          :indexColumn="indexColumn"
+        />
+      </li>
     </div>
   </li>
 </template>
@@ -56,7 +65,12 @@ export default {
   computed: {
     indexColumn() {
       return this.$store.getters.columns.findIndex(({ id }) => id === this.id);
-    },
+    }
+  },
+  data() {
+    return {
+      isGrabbing: false
+    };
   },
   methods: {
     ...mapMutations(["addCard", "sortBy", "removeColumn", "reorderColumns"]),
@@ -76,6 +90,7 @@ export default {
     dragEnd() {},
 
     onDrop(event, indexColumn) {
+      this.isGrabbing = true;
       const newIndex = indexColumn;
       const oldIndex = event.dataTransfer.getData("indexColumn");
       this.reorderColumns({
@@ -84,7 +99,7 @@ export default {
         newIndex
       });
       event.dataTransfer.clearData();
-    },
+    }
   }
 };
 </script>
